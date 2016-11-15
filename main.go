@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/docker/go-plugins-helpers/authorization"
 	log "github.com/Sirupsen/logrus"
+	"github.com/docker/go-plugins-helpers/authorization"
 )
 
 const (
@@ -10,7 +10,6 @@ const (
 	// loaded.
 	pluginSocket = "/run/docker/plugins/sesame.sock"
 )
-
 
 func main() {
 	sesame, err := newPlugin()
