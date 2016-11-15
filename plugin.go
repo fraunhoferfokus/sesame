@@ -1,11 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"regexp"
 	"strings"
-	"io/ioutil"
-	"encoding/json"
+
 	"github.com/docker/go-plugins-helpers/authorization"
 )
 
@@ -17,8 +18,8 @@ const (
 // Docker Remote API.
 // see https://docs.docker.com/engine/reference/api/docker_remote_api/
 type Rule struct {
-	Method string   `json:"method"`
-	Pattern string  `json:"pattern"`
+	Method  string `json:"method"`
+	Pattern string `json:"pattern"`
 }
 
 // matches checks if given method equals to Rule's method and if the given URI
@@ -62,21 +63,26 @@ func newPlugin() (*sesame, error) {
 
 func (p *sesame) AuthZReq(req authorization.Request) authorization.Response {
 	user := req.User
+	method := req.RequestMethod
+	uri := req.RequestURI
 
 	if rules, ok := p.rules[user]; ok {
-		method := req.RequestMethod
-		uri := req.RequestURI
 
 		for _, rule := range rules {
 			if rule.matches(method, uri) {
 				return authorization.Response{Allow: true}
 			}
 		}
+	} else {
+		return authorization.Response{
+			Allow: false,
+			Msg:   fmt.Sprintf("User '%s' not found!", user),
+		}
 	}
 
 	return authorization.Response{
 		Allow: false,
-		Msg: fmt.Sprintf("User '%s' not found!", user),
+		Msg:   fmt.Sprintf("User '%s' forbidden to %s on %s!", user, method, uri),
 	}
 }
 
