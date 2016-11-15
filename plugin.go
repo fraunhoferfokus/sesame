@@ -10,10 +10,6 @@ import (
 	"github.com/docker/go-plugins-helpers/authorization"
 )
 
-const (
-	rulesPath = "/etc/sesame/rules.json"
-)
-
 // Rule defines an allowed action by defining method and path pattern of a
 // Docker Remote API.
 // see https://docs.docker.com/engine/reference/api/docker_remote_api/
@@ -43,7 +39,7 @@ type sesame struct {
 
 // newPlugin creates a new Sesame plugin.
 // It first loads the rules and then registers the unix socket.
-func newPlugin() (*sesame, error) {
+func newPlugin(rulesPath string) (*sesame, error) {
 	var plugin sesame
 
 	// Read the rules and decode them
