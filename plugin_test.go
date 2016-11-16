@@ -72,4 +72,17 @@ func TestAuthZReq(t *testing.T) {
 			mustDeny(t, res)
 		}
 	})
+
+	t.Run("Multiple method operations", func(t *testing.T) {
+		req := auth.Request{User: "allcontainers", RequestMethod: "GET"}
+
+		req.RequestURI = "/v1.24/containers/json"
+		res := p.AuthZReq(req)
+		mustAllow(t, res)
+
+		req.RequestMethod = "POST"
+		req.RequestURI = "/v1.24/containers/create"
+		res = p.AuthZReq(req)
+		mustAllow(t, res)
+	})
 }

@@ -16,5 +16,11 @@
             "method": "POST",
             "pattern": "/containers/MYCONTAINER/(start|stop|restart|kill|update|pause|unpause)$"
         }
+    ],
+    "allcontainers": [
+        {
+            "method": "GET|POST",
+            "pattern": "/containers/.*"
+        }
     ]
 }

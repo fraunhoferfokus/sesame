@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
-	"strings"
 
 	"github.com/docker/go-plugins-helpers/authorization"
 )
@@ -23,7 +22,7 @@ type Rule struct {
 func (r *Rule) matches(method string, uri string) bool {
 	matched := false
 
-	if strings.EqualFold(r.Method, method) {
+	if methodMatched, _ := regexp.MatchString(r.Method, method); methodMatched {
 		// TODO take care of errors!
 		matched, _ = regexp.MatchString(r.Pattern, uri)
 	}
