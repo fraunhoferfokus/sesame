@@ -1,5 +1,8 @@
 OUTPUT_DIR = build
 
+get-deps:
+	go get ./...
+
 clean:
 	rm -rf $(OUTPUT_DIR)
 
