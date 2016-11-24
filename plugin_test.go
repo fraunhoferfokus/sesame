@@ -21,6 +21,24 @@ func mustDeny(t *testing.T, res auth.Response) {
 	mustDo(false, t, res)
 }
 
+func TestInvalidFiles(t *testing.T) {
+	// Non-existing files
+	t.Run("Rules files does not exist", func(t *testing.T) {
+		_, err := newPlugin("./testdata/doesntexist.json")
+		if err == nil {
+			t.Error("Should NOT accept non-existing files!")
+		}
+	})
+
+	// Invalid JSON rules
+	t.Run("Rules files is not a valid JSON", func(t *testing.T) {
+		_, err := newPlugin("./testdata/rules.invalid.json")
+		if err == nil {
+			t.Error("Should NOT accept invalid JSON files!")
+		}
+	})
+}
+
 func TestAuthZReq(t *testing.T) {
 	p, err := newPlugin("./testdata/rules.json")
 	if err != nil {
@@ -85,4 +103,27 @@ func TestAuthZReq(t *testing.T) {
 		res = p.AuthZReq(req)
 		mustAllow(t, res)
 	})
+
+	t.Run("Non-existing user", func(t *testing.T) {
+		req := auth.Request{
+			User:          "bob",
+			RequestMethod: "GET",
+			RequestURI:    "/v1.24/containers/MINE/start",
+		}
+
+		res := p.AuthZReq(req)
+		mustDeny(t, res)
+	})
+}
+
+func TestAuthZRes(t *testing.T) {
+	p, err := newPlugin("./testdata/rules.json")
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Should always allow!
+	req := auth.Request{User: "WHOEVER", RequestMethod: "INVALID", RequestURI: "WHEREVER"}
+	res := p.AuthZRes(req)
+	mustAllow(t, res)
 }

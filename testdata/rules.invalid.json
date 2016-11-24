@@ -1,0 +1,25 @@
+{
+    "readonly": [
+        {
+            "method": "GET",
+            "pattern": "/containers/json$"
+        }
+    ],
+    "buildonly": [
+        {
+            "method": "POST",
+            "pattern": "/build$"
+        }
+    ],
+    "onecontainer": [
+        {
+            "method": "POST",
+            "pattern": "/containers/MYCONTAINER/(start|stop|restart|kill|update|pause|unpause)$"
+        }
+    ],
+    "allcontainers": [
+        {
+            "method": "GET|POST",
+            "pattern": "/containers/.*"
+        }
+    ]
