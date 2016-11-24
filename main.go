@@ -29,6 +29,7 @@ func main() {
 		log.Fatalf("Could not initiate plugin! (err: %s)", err)
 	}
 
+	log.Infof("Starting to listen on '%s'", pluginSocket)
 	h := authorization.NewHandler(sesame)
 	err = h.ServeUnix("root", pluginSocket)
 	if err != nil {
